@@ -64,14 +64,20 @@ export function App() {
                 </span>
                 <input
                   type="search"
-                  placeholder="Search Colabino"
+                  placeholder="Search workspace"
                   className="h-8 w-full rounded-full border border-black/10 bg-white pl-9 pr-3 text-sm placeholder:text-[11px] placeholder:text-black/35 outline-none ring-black/10 focus:ring-2"
                 />
               </label>
             </div>
               <div className="flex items-center justify-end gap-2" style={iconColor}>
-                <button className="grid h-8 w-8 place-items-center text-black/60 hover:text-black" aria-label="Notifications">
+                <button
+                  className="relative grid h-8 w-8 place-items-center text-black/60 hover:text-black"
+                  aria-label="Notifications"
+                >
                   <Bell className="h-5 w-5" aria-hidden="true" />
+                  <span className="absolute -top-0.5 -right-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-sky-500 text-[9px] font-semibold text-white">
+                    3
+                  </span>
                 </button>
                 <details className="relative">
                   <summary className="list-none">
