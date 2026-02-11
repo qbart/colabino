@@ -14,6 +14,7 @@ import {
   Layers,
   MessageSquare,
   Orbit,
+  Lock,
   Search as SearchIcon,
   Settings,
   Share2,
@@ -43,9 +44,12 @@ type DriveFile = {
   id: string;
   name: string;
   typeLabel: string;
-  category: "project" | "media" | "document" | "spreadsheet" | "proposal" | "board";
+  category: "folder" | "project" | "media" | "document" | "spreadsheet" | "proposal" | "board";
+  mediaKind?: "image" | "audio" | "3d";
   updatedAt: string;
   collaborators: number;
+  permission: "owner" | "editor" | "viewer" | "restricted";
+  path: string;
   sessionBased: boolean;
   activeNow?: number;
   metrics?: {
@@ -66,25 +70,67 @@ const sidebarItems: SidebarItem[] = [
 
 const driveFiles: DriveFile[] = [
   {
+    id: "d-1",
+    name: "Product Workspace",
+    typeLabel: "Folder",
+    category: "folder",
+    updatedAt: "Just now",
+    collaborators: 9,
+    permission: "owner",
+    path: "My Drive",
+    sessionBased: true,
+    activeNow: 3,
+  },
+  {
     id: "f-1",
     name: "Q2 Product Launch",
     typeLabel: "Project",
     category: "project",
     updatedAt: "2m ago",
     collaborators: 8,
+    permission: "editor",
+    path: "My Drive / Product Workspace",
     sessionBased: true,
     activeNow: 3,
     metrics: { completion: 64, burndown: "on-track" },
   },
   {
     id: "f-2",
-    name: "Brand Asset Pack",
-    typeLabel: "Images / Audio / 3D",
+    name: "Homepage Hero Render",
+    typeLabel: "Image Asset",
     category: "media",
     updatedAt: "15m ago",
+    mediaKind: "image",
     collaborators: 5,
+    permission: "editor",
+    path: "My Drive / Product Workspace",
     sessionBased: true,
     activeNow: 2,
+  },
+  {
+    id: "f-7",
+    name: "Voiceover Draft 02",
+    typeLabel: "Audio Asset",
+    category: "media",
+    updatedAt: "34m ago",
+    mediaKind: "audio",
+    collaborators: 3,
+    permission: "editor",
+    path: "My Drive / Product Workspace",
+    sessionBased: false,
+  },
+  {
+    id: "f-8",
+    name: "Device Mockup v5",
+    typeLabel: "3D Asset",
+    category: "media",
+    updatedAt: "48m ago",
+    mediaKind: "3d",
+    collaborators: 4,
+    permission: "viewer",
+    path: "My Drive / Product Workspace",
+    sessionBased: true,
+    activeNow: 1,
   },
   {
     id: "f-3",
@@ -93,6 +139,19 @@ const driveFiles: DriveFile[] = [
     category: "document",
     updatedAt: "1h ago",
     collaborators: 4,
+    permission: "viewer",
+    path: "My Drive / Operations",
+    sessionBased: false,
+  },
+  {
+    id: "d-2",
+    name: "Finance",
+    typeLabel: "Folder",
+    category: "folder",
+    updatedAt: "2h ago",
+    collaborators: 4,
+    permission: "restricted",
+    path: "My Drive",
     sessionBased: false,
   },
   {
@@ -102,6 +161,8 @@ const driveFiles: DriveFile[] = [
     category: "spreadsheet",
     updatedAt: "3h ago",
     collaborators: 6,
+    permission: "owner",
+    path: "My Drive / Finance",
     sessionBased: true,
     activeNow: 1,
   },
@@ -112,6 +173,8 @@ const driveFiles: DriveFile[] = [
     category: "proposal",
     updatedAt: "Today",
     collaborators: 3,
+    permission: "editor",
+    path: "My Drive / Proposals",
     sessionBased: false,
   },
   {
@@ -121,24 +184,30 @@ const driveFiles: DriveFile[] = [
     category: "board",
     updatedAt: "Just now",
     collaborators: 7,
+    permission: "editor",
+    path: "My Drive / Product Workspace",
     sessionBased: true,
     activeNow: 4,
   },
 ];
 
-function fileCategoryIcon(category: DriveFile["category"]) {
+function fileCategoryIcon(file: DriveFile) {
   const common = "h-4 w-4";
-  switch (category) {
+  switch (file.category) {
+    case "folder":
+      return <Folder className={common} aria-hidden="true" />;
     case "project":
       return <FileCog className={common} aria-hidden="true" />;
     case "media":
-      return (
-        <span className="flex items-center gap-0.5" aria-hidden="true">
-          <ImageIcon className="h-3.5 w-3.5" />
-          <FileAudio2 className="h-3.5 w-3.5" />
-          <Boxes className="h-3.5 w-3.5" />
-        </span>
-      );
+      if (file.mediaKind === "image") {
+        return (
+          <span className="relative block h-8 w-8 overflow-hidden rounded-md bg-gradient-to-br from-indigo-100 via-sky-100 to-amber-100">
+            <ImageIcon className="absolute bottom-1 right-1 h-3.5 w-3.5 text-black/55" aria-hidden="true" />
+          </span>
+        );
+      }
+      if (file.mediaKind === "audio") return <FileAudio2 className={common} aria-hidden="true" />;
+      return <Boxes className={common} aria-hidden="true" />;
     case "document":
       return <FileText className={common} aria-hidden="true" />;
     case "spreadsheet":
@@ -150,6 +219,18 @@ function fileCategoryIcon(category: DriveFile["category"]) {
     default:
       return <FileText className={common} aria-hidden="true" />;
   }
+}
+
+function permissionBadge(permission: DriveFile["permission"]) {
+  if (permission === "owner") return <span className="rounded-md bg-indigo-50 px-2 py-1 text-indigo-700">Owner</span>;
+  if (permission === "editor") return <span className="rounded-md bg-emerald-50 px-2 py-1 text-emerald-700">Editor</span>;
+  if (permission === "viewer") return <span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">Viewer</span>;
+  return (
+    <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-1 text-amber-700">
+      <Lock className="h-3 w-3" aria-hidden="true" />
+      Restricted
+    </span>
+  );
 }
 
 function ViewContent({ title, description }: { title: string; description: string }) {
@@ -166,6 +247,12 @@ function AppsView() {
 }
 
 function DriveView() {
+  const sortedDriveFiles = [...driveFiles].sort((a, b) => {
+    if (a.category === "folder" && b.category !== "folder") return -1;
+    if (a.category !== "folder" && b.category === "folder") return 1;
+    return a.name.localeCompare(b.name);
+  });
+
   return (
     <section className="h-full rounded-t-[20px] bg-white p-6 shadow-[0_6px_14px_rgba(15,23,42,0.16)]">
       <div className="mb-4 flex items-start justify-between">
@@ -177,26 +264,33 @@ function DriveView() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-black/8">
-        <div className="grid grid-cols-[2.1fr_1fr_0.8fr_0.8fr_1.2fr] bg-black/[0.03] px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-black/50">
+        <div className="grid grid-cols-[2.1fr_1fr_0.8fr_0.8fr_0.9fr_1.2fr] bg-black/[0.03] px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-black/50">
           <span>File</span>
           <span>Type</span>
           <span>Active</span>
           <span>People</span>
+          <span>Access</span>
           <span>Project Signals</span>
         </div>
         <div>
-          {driveFiles.map(file => (
+          {sortedDriveFiles.map(file => (
             <article
               key={file.id}
-              className="grid grid-cols-[2.1fr_1fr_0.8fr_0.8fr_1.2fr] items-center border-t border-black/[0.06] px-4 py-3 text-sm"
+              className="grid grid-cols-[2.1fr_1fr_0.8fr_0.8fr_0.9fr_1.2fr] items-center border-t border-black/[0.06] px-4 py-3 text-sm"
             >
               <div className="flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-lg bg-black/[0.04] text-black/70">
-                  {fileCategoryIcon(file.category)}
+                <span
+                  className={`grid h-8 w-8 place-items-center rounded-lg text-black/70 ${
+                    file.category === "media" && file.mediaKind === "image" ? "bg-transparent" : "bg-black/[0.04]"
+                  }`}
+                >
+                  {fileCategoryIcon(file)}
                 </span>
                 <div>
                   <div className="font-medium text-black/90">{file.name}</div>
-                  <div className="text-xs text-black/45">Updated {file.updatedAt}</div>
+                  <div className="text-xs text-black/45">
+                    {file.path} • Updated {file.updatedAt}
+                  </div>
                 </div>
               </div>
 
@@ -227,8 +321,12 @@ function DriveView() {
                 </span>
               </div>
 
+              <div className="text-xs text-black/60">{permissionBadge(file.permission)}</div>
+
               <div className="text-xs text-black/60">
-                {file.category === "project" ? (
+                {file.category === "folder" ? (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-black/[0.04] px-2 py-1">Container</span>
+                ) : file.category === "project" ? (
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-black/[0.04] px-2 py-1">{file.metrics?.completion ?? 0}% done</span>
                     <span
