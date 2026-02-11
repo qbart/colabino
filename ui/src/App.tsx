@@ -26,9 +26,9 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f2f3f5] text-[#1a1a1a]">
+    <div className="min-h-screen text-[#1a1a1a]">
       <div className="grid min-h-screen grid-cols-[64px_1fr]">
-        <aside className="flex min-h-screen flex-col bg-[#f2f3f5]">
+        <aside className="flex min-h-screen flex-col">
           <div className="flex h-16 items-center justify-center">
             <img src={logo} alt="Colabino" className="h-8 w-8" />
           </div>
@@ -54,7 +54,7 @@ export function App() {
         </aside>
 
         <div className="flex min-h-screen flex-col">
-          <header className="grid h-16 grid-cols-[1fr_minmax(240px,520px)_1fr] items-center bg-[#f2f3f5] pr-4">
+          <header className="grid h-16 grid-cols-[1fr_minmax(240px,520px)_1fr] items-center pr-4">
             <div className="text-base font-bold">Colabino</div>
             <div className="mx-auto w-full max-w-[620px]">
               <label className="relative block">
