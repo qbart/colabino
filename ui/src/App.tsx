@@ -6,6 +6,7 @@ import logo from "./logo.png";
 import { DrivePage } from "./pages/DrivePage";
 import { DrivePage2 } from "./pages/DrivePage2";
 import { DrivePage3 } from "./pages/DrivePage3";
+import { DrivePage4 } from "./pages/DrivePage4";
 
 type SidebarItem = {
   label: string;
@@ -18,6 +19,7 @@ const sidebarItems: SidebarItem[] = [
   { label: "My Drive", path: "/drive", Icon: Folder },
   { label: "My Drive v2", path: "/drive-2", Icon: Folder },
   { label: "My Drive v3", path: "/drive-3", Icon: Folder },
+  { label: "My Drive v4", path: "/drive-4", Icon: Folder },
   { label: "Search", path: "/search", Icon: SearchIcon },
   { label: "Upload", path: "/upload", Icon: Upload },
   { label: "Shared", path: "/shared", Icon: Share2 },
@@ -156,6 +158,7 @@ export function App() {
           <Route path="/drive" element={<DrivePage />} />
           <Route path="/drive-2" element={<DrivePage2 />} />
           <Route path="/drive-3" element={<DrivePage3 />} />
+          <Route path="/drive-4" element={<DrivePage4 />} />
           <Route path="/search" element={<SearchView />} />
           <Route path="/upload" element={<UploadView />} />
           <Route path="/shared" element={<SharedView />} />
