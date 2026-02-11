@@ -1,29 +1,82 @@
 import "./index.css";
-import type { CSSProperties } from "react";
 import {
   Bell,
   Folder,
   Grid2x2,
-  Search,
+  Search as SearchIcon,
   Settings,
   Share2,
   Star,
   Upload,
   Users,
 } from "lucide-react";
+import type { ComponentType } from "react";
+import {
+  HashRouter,
+  NavLink,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import logo from "./logo.png";
 
-export function App() {
-  const iconColor: CSSProperties = { "--iconPrimary": "currentColor" } as CSSProperties;
-  const sidebarItems = [
-    { label: "Apps", Icon: Grid2x2, isActive: true },
-    { label: "My Drive", Icon: Folder },
-    { label: "Search", Icon: Search },
-    { label: "Upload", Icon: Upload },
-    { label: "Shared", Icon: Share2 },
-    { label: "Starred", Icon: Star },
-    { label: "Settings", Icon: Settings },
-  ];
+type SidebarItem = {
+  label: string;
+  path: string;
+  Icon: ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>;
+};
+
+const sidebarItems: SidebarItem[] = [
+  { label: "Apps", path: "/apps", Icon: Grid2x2 },
+  { label: "My Drive", path: "/drive", Icon: Folder },
+  { label: "Search", path: "/search", Icon: SearchIcon },
+  { label: "Upload", path: "/upload", Icon: Upload },
+  { label: "Shared", path: "/shared", Icon: Share2 },
+  { label: "Starred", path: "/starred", Icon: Star },
+  { label: "Settings", path: "/settings", Icon: Settings },
+];
+
+function ViewContent({ title, description }: { title: string; description: string }) {
+  return (
+    <section className="h-full rounded-t-[20px] bg-white p-6 shadow-[0_6px_14px_rgba(15,23,42,0.16)]">
+      <div className="text-lg font-semibold">{title}</div>
+      <p className="mt-2 text-sm text-black/60">{description}</p>
+    </section>
+  );
+}
+
+function AppsView() {
+  return <ViewContent title="Apps" description="This is the apps overview page." />;
+}
+
+function DriveView() {
+  return <ViewContent title="My Drive" description="Manage files and folders in your drive." />;
+}
+
+function SearchView() {
+  return <ViewContent title="Search" description="Search results and filters will appear here." />;
+}
+
+function UploadView() {
+  return <ViewContent title="Upload" description="Track and manage current uploads." />;
+}
+
+function SharedView() {
+  return <ViewContent title="Shared" description="Items shared with your team are listed here." />;
+}
+
+function StarredView() {
+  return <ViewContent title="Starred" description="Quick access to starred files and folders." />;
+}
+
+function SettingsView() {
+  return <ViewContent title="Settings" description="Workspace preferences and configuration." />;
+}
+
+function AppLayout() {
+  const location = useLocation();
 
   return (
     <div className="min-h-screen text-[#1a1a1a]">
@@ -34,20 +87,23 @@ export function App() {
           </div>
           <div className="flex flex-1 flex-col items-center gap-3 py-4">
             <nav className="flex flex-col gap-3" aria-label="Primary">
-              {sidebarItems.map(({ label, Icon, isActive }) => (
-                <button
-                  key={label}
-                  className={`grid h-10 w-10 place-items-center rounded-xl transition ${
-                    isActive ? "bg-black/10 text-black" : "text-black/50 hover:bg-black/5 hover:text-black/70"
-                  }`}
-                  style={iconColor}
-                  aria-label={label}
-                >
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </button>
-              ))}
+              {sidebarItems.map(({ label, path, Icon }) => {
+                const isActive = location.pathname === path;
+                return (
+                  <NavLink
+                    key={label}
+                    to={path}
+                    className={`grid h-10 w-10 place-items-center rounded-xl transition ${
+                      isActive ? "bg-black/10 text-black" : "text-black/50 hover:bg-black/5 hover:text-black/70"
+                    }`}
+                    aria-label={label}
+                  >
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </NavLink>
+                );
+              })}
             </nav>
-            <div className="mt-auto grid h-9 w-9 place-items-center rounded-full bg-black/5" style={iconColor}>
+            <div className="mt-auto grid h-9 w-9 place-items-center rounded-full bg-black/5">
               <Users className="h-4 w-4" aria-hidden="true" />
             </div>
           </div>
@@ -60,7 +116,7 @@ export function App() {
               <label className="relative block">
                 <span className="sr-only">Search</span>
                 <span className="pointer-events-none absolute inset-y-0 left-3 grid place-items-center text-black/40">
-                  <Search className="h-4 w-4" aria-hidden="true" />
+                  <SearchIcon className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <input
                   type="search"
@@ -69,47 +125,60 @@ export function App() {
                 />
               </label>
             </div>
-              <div className="flex items-center justify-end gap-2" style={iconColor}>
-                <button
-                  className="relative grid h-8 w-8 place-items-center text-black/60 hover:text-black"
-                  aria-label="Notifications"
-                >
-                  <Bell className="h-5 w-5" aria-hidden="true" />
-                  <span className="absolute -top-0.5 -right-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-sky-500 text-[9px] font-semibold text-white">
-                    3
-                  </span>
-                </button>
-                <details className="relative">
-                  <summary className="list-none">
-                    <button
-                      type="button"
-                      className="grid h-8 w-8 place-items-center rounded-full text-black/60 hover:text-black"
-                      aria-label="Account"
-                    >
-                      <img src={logo} alt="User" className="h-7 w-7 rounded-full" />
-                    </button>
-                  </summary>
-                  <div className="absolute right-0 mt-2 w-40 rounded-xl border border-black/10 bg-white p-2 text-sm shadow-[0_8px_20px_rgba(15,23,42,0.12)]">
-                    <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Profile</button>
-                    <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Settings</button>
-                    <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Sign out</button>
-                  </div>
-                </details>
-              </div>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                className="relative grid h-8 w-8 place-items-center text-black/60 hover:text-black"
+                aria-label="Notifications"
+              >
+                <Bell className="h-5 w-5" aria-hidden="true" />
+                <span className="absolute -top-0.5 -right-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-sky-500 text-[9px] font-semibold text-white">
+                  3
+                </span>
+              </button>
+              <details className="relative">
+                <summary className="list-none">
+                  <button
+                    type="button"
+                    className="grid h-8 w-8 place-items-center rounded-full text-black/60 hover:text-black"
+                    aria-label="Account"
+                  >
+                    <img src={logo} alt="User" className="h-7 w-7 rounded-full" />
+                  </button>
+                </summary>
+                <div className="absolute right-0 mt-2 w-40 rounded-xl border border-black/10 bg-white p-2 text-sm shadow-[0_8px_20px_rgba(15,23,42,0.12)]">
+                  <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Profile</button>
+                  <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Settings</button>
+                  <button className="w-full rounded-md px-3 py-2 text-left hover:bg-black/5">Sign out</button>
+                </div>
+              </details>
+            </div>
           </header>
 
           <main className="flex-1 pr-4">
-            <section className="h-full rounded-t-[20px] bg-white p-6 shadow-[0_6px_14px_rgba(15,23,42,0.16)]">
-              <div className="text-lg font-semibold">Main Section</div>
-              <p className="mt-2 text-sm text-black/60">
-                Replace this with the primary content. The slight right margin and rounded corners mirror the Spectrum
-                layout feel.
-              </p>
-            </section>
+            <Outlet />
           </main>
         </div>
       </div>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <HashRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route index element={<Navigate to="/apps" replace />} />
+          <Route path="/apps" element={<AppsView />} />
+          <Route path="/drive" element={<DriveView />} />
+          <Route path="/search" element={<SearchView />} />
+          <Route path="/upload" element={<UploadView />} />
+          <Route path="/shared" element={<SharedView />} />
+          <Route path="/starred" element={<StarredView />} />
+          <Route path="/settings" element={<SettingsView />} />
+        </Route>
+      </Routes>
+    </HashRouter>
   );
 }
 
