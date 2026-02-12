@@ -1,4 +1,3 @@
-import "./index.css";
 import { Bell, Folder, Grid2x2, Search as SearchIcon, Settings, Share2, Star, Upload, Users } from "lucide-react";
 import type { ComponentType } from "react";
 import { HashRouter, NavLink, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
