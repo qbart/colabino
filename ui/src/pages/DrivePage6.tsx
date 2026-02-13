@@ -1,6 +1,7 @@
 import {
   Activity,
   AudioLines,
+  CircleDollarSign,
   Cylinder,
   FileText,
   FilePenLine,
@@ -20,6 +21,7 @@ type ItemKind = "folder" | "project" | "image" | "audio" | "3d" | "document" | "
 type DriveItem = {
   name: string;
   kind: ItemKind;
+  ribbon?: "red" | "blue" | "green" | "amber";
   previewSrc?: string;
   fileCount?: number;
   imageType?: "PNG" | "JPG" | "WEBP";
@@ -34,13 +36,13 @@ type DriveItem = {
 
 const items = [
   { name: "Product Docs", kind: "folder", fileCount: 24 },
-  { name: "Q2 Product Launch", kind: "project", projectMilestone: "Sprint 14", openTasks: 8 },
+  { name: "Q2 Product Launch", kind: "project", projectMilestone: "Sprint 14", openTasks: 8, ribbon: "red" },
   { name: "Design Assets", kind: "folder", fileCount: 57 },
-  { name: "Homepage Hero Render", kind: "image", previewSrc: logo, imageType: "PNG", resolution: "600x200" },
+  { name: "Homepage Hero Render", kind: "image", previewSrc: logo, imageType: "PNG", resolution: "600x200", ribbon: "blue" },
   { name: "Product Team Photo", kind: "image", imageType: "JPG", resolution: "3024x2016" },
-  { name: "Voiceover Draft 02", kind: "audio", audioType: "WAV", duration: "3.4s" },
+  { name: "Voiceover Draft 02", kind: "audio", audioType: "WAV", duration: "3.4s", ribbon: "amber" },
   { name: "Narration Take Final", kind: "audio", audioType: "FLAC", duration: "2:32m" },
-  { name: "Device Mockup v5", kind: "3d", modelType: "GLTF", tris: "1.4M tris" },
+  { name: "Device Mockup v5", kind: "3d", modelType: "GLTF", tris: "1.4M tris", ribbon: "green" },
   { name: "Finance", kind: "folder", fileCount: 13 },
   { name: "Growth Model 2026", kind: "sheet" },
   { name: "Operations", kind: "folder", fileCount: 31 },
@@ -96,10 +98,21 @@ function kindIcon(kind: ItemKind) {
 }
 
 function leadingVisual(item: DriveItem) {
+  if (item.name === "Client Estimation v3") {
+    return <CircleDollarSign className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
+  }
   if (item.kind === "image" && item.previewSrc) {
     return <img src={item.previewSrc} alt="" className="h-7 w-7 shrink-0 rounded object-cover" aria-hidden="true" />;
   }
   return kindIcon(item.kind);
+}
+
+function ribbonClass(ribbon?: DriveItem["ribbon"]) {
+  if (ribbon === "red") return "bg-red-500";
+  if (ribbon === "blue") return "bg-sky-500";
+  if (ribbon === "green") return "bg-emerald-500";
+  if (ribbon === "amber") return "bg-amber-500";
+  return "";
 }
 
 function durationToSeconds(raw?: string) {
@@ -187,6 +200,7 @@ export function DrivePage6() {
               key={item.name}
               className="relative flex min-h-14 items-center justify-between gap-2 overflow-hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-left hover:bg-black/[0.02]"
             >
+              {item.ribbon ? <span className={`absolute inset-y-0 left-0 w-1 ${ribbonClass(item.ribbon)}`} /> : null}
               <div className="flex min-w-0 items-center gap-2">
                 {leadingVisual(item)}
                 <div className="min-w-0">
@@ -194,28 +208,30 @@ export function DrivePage6() {
                   <div className="text-[10px] text-black/50">{secondaryLabel(item)}</div>
                 </div>
               </div>
-              {item.kind === "audio" ? (
-                <button
-                  type="button"
-                  aria-label={playingItem === item.name ? `Stop ${item.name}` : `Play ${item.name}`}
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-black/15 text-black/70 hover:bg-black/[0.03]"
-                  onClick={() => {
-                    if (playingItem === item.name) {
-                      setPlayingItem(null);
+              <div className="flex shrink-0 items-center gap-1.5">
+                {item.kind === "audio" ? (
+                  <button
+                    type="button"
+                    aria-label={playingItem === item.name ? `Stop ${item.name}` : `Play ${item.name}`}
+                    className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-black/15 text-black/70 hover:bg-black/[0.03]"
+                    onClick={() => {
+                      if (playingItem === item.name) {
+                        setPlayingItem(null);
+                        setPlayProgress(0);
+                        return;
+                      }
                       setPlayProgress(0);
-                      return;
-                    }
-                    setPlayProgress(0);
-                    setPlayingItem(item.name);
-                  }}
-                >
-                  {playingItem === item.name ? (
-                    <Square className="h-3 w-3" aria-hidden="true" />
-                  ) : (
-                    <Play className="h-3 w-3" aria-hidden="true" />
-                  )}
-                </button>
-              ) : null}
+                      setPlayingItem(item.name);
+                    }}
+                  >
+                    {playingItem === item.name ? (
+                      <Square className="h-3 w-3" aria-hidden="true" />
+                    ) : (
+                      <Play className="h-3 w-3" aria-hidden="true" />
+                    )}
+                  </button>
+                ) : null}
+              </div>
               {item.kind === "audio" && playingItem === item.name ? (
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-black/10">
                   <div className="h-full bg-black/60 transition-[width] duration-75" style={{ width: `${playProgress}%` }} />
