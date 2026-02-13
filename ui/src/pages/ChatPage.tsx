@@ -10,6 +10,7 @@ import {
   MessageCircle,
   UserRound,
 } from "lucide-react";
+import { Button as S2Button } from "@react-spectrum/s2";
 import { FormEvent, KeyboardEvent, useState } from "react";
 
 type ChatMessage = {
@@ -379,27 +380,18 @@ export function ChatPage() {
 
           <div className="mt-3 border-t border-black/10 pt-3">
             <div className="grid grid-cols-3 gap-1.5">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]"
-              >
+              <S2Button UNSAFE_className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]">
                 <MessageSquareText className="h-3.5 w-3.5" aria-hidden="true" />
                 DMs
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]"
-              >
+              </S2Button>
+              <S2Button UNSAFE_className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]">
                 <Bell className="h-3.5 w-3.5" aria-hidden="true" />
                 Alerts
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]"
-              >
+              </S2Button>
+              <S2Button UNSAFE_className="inline-flex items-center justify-center gap-1 rounded-md border border-black/15 px-2 py-1.5 text-[11px] text-black/70 hover:bg-black/[0.04]">
                 <Settings2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Settings
-              </button>
+              </S2Button>
             </div>
           </div>
         </aside>

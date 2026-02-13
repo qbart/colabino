@@ -29,6 +29,27 @@
   }
 }
 
+@keyframes black-fade-highlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    background-color: rgb(255 255 255);
+  }
+  18% {
+    box-shadow: 0 0 0 7px rgba(0, 0, 0, 0.14);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    background-color: rgb(255 255 255);
+  }
+}
+
+.animate-black-fade-highlight {
+  box-shadow: 0 0 0 7px rgba(0, 0, 0, 0.14);
+  background-color: rgba(0, 0, 0, 0.04);
+  animation: black-fade-highlight 900ms ease-out;
+}
+
 @media (prefers-reduced-motion) {
   *,
   ::before,
