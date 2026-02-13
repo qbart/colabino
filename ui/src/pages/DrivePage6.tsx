@@ -167,7 +167,7 @@ export function DrivePage6() {
   return (
     <section className="h-full rounded-t-[20px] bg-white p-6 shadow-[0_6px_14px_rgba(15,23,42,0.16)]">
       <div className="mb-6 flex items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold">My Drive v6</h2>
+        <h2 className="text-lg font-semibold">Data</h2>
         <div className="inline-flex items-center rounded-lg border border-black/10 bg-black/[0.02] p-1 text-xs">
           <button
             type="button"
@@ -191,8 +191,6 @@ export function DrivePage6() {
           </button>
         </div>
       </div>
-      <p className="mb-4 text-sm text-black/55">[{view === "simple" ? "Simple" : "Signals"} view]</p>
-
       {view === "simple" ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {sortedItems.map(item => (

@@ -4,9 +4,6 @@ import { HashRouter, NavLink, Navigate, Outlet, Route, Routes, useLocation } fro
 import logo from "./logo.png";
 import { DrivePage } from "./pages/DrivePage";
 import { DrivePage2 } from "./pages/DrivePage2";
-import { DrivePage3 } from "./pages/DrivePage3";
-import { DrivePage4 } from "./pages/DrivePage4";
-import { DrivePage5 } from "./pages/DrivePage5";
 import { DrivePage6 } from "./pages/DrivePage6";
 import { ChatPage } from "./pages/ChatPage";
 
@@ -14,17 +11,15 @@ type SidebarItem = {
   label: string;
   path: string;
   Icon: ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>;
+  spacerBefore?: boolean;
 };
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Apps", path: "/apps", Icon: Grid2x2 },
+  { label: "Main Drive", path: "/drive-6", Icon: Folder },
+  { label: "Chat", path: "/chat", Icon: MessageCircle },
+  { label: "Apps", path: "/apps", Icon: Grid2x2, spacerBefore: true },
   { label: "My Drive", path: "/drive", Icon: Folder },
   { label: "My Drive v2", path: "/drive-2", Icon: Folder },
-  { label: "My Drive v3", path: "/drive-3", Icon: Folder },
-  { label: "My Drive v4", path: "/drive-4", Icon: Folder },
-  { label: "My Drive v5", path: "/drive-5", Icon: Folder },
-  { label: "My Drive v6", path: "/drive-6", Icon: Folder },
-  { label: "Chat", path: "/chat", Icon: MessageCircle },
   { label: "Search", path: "/search", Icon: SearchIcon },
   { label: "Upload", path: "/upload", Icon: Upload },
   { label: "Shared", path: "/shared", Icon: Share2 },
@@ -77,13 +72,15 @@ function AppLayout() {
           </div>
           <div className="flex flex-1 flex-col items-center gap-3 py-4">
             <nav className="flex flex-col gap-3" aria-label="Primary">
-              {sidebarItems.map(({ label, path, Icon }) => {
+              {sidebarItems.map(({ label, path, Icon, spacerBefore }) => {
                 const isActive = location.pathname === path;
                 return (
                   <NavLink
                     key={label}
                     to={path}
                     className={`grid h-10 w-10 place-items-center rounded-xl transition ${
+                      spacerBefore ? "mt-4" : ""
+                    } ${
                       isActive ? "bg-black/10 text-black" : "text-black/50 hover:bg-black/5 hover:text-black/70"
                     }`}
                     aria-label={label}
@@ -158,13 +155,10 @@ export function App() {
     <HashRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route index element={<Navigate to="/apps" replace />} />
+          <Route index element={<Navigate to="/drive-6" replace />} />
           <Route path="/apps" element={<AppsView />} />
           <Route path="/drive" element={<DrivePage />} />
           <Route path="/drive-2" element={<DrivePage2 />} />
-          <Route path="/drive-3" element={<DrivePage3 />} />
-          <Route path="/drive-4" element={<DrivePage4 />} />
-          <Route path="/drive-5" element={<DrivePage5 />} />
           <Route path="/drive-6" element={<DrivePage6 />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/search" element={<SearchView />} />
