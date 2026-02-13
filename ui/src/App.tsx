@@ -1,4 +1,4 @@
-import { Bell, Folder, Grid2x2, Search as SearchIcon, Settings, Share2, Star, Upload, Users } from "lucide-react";
+import { Bell, Folder, Grid2x2, MessageCircle, Search as SearchIcon, Settings, Share2, Star, Upload, Users } from "lucide-react";
 import type { ComponentType } from "react";
 import { HashRouter, NavLink, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import logo from "./logo.png";
@@ -8,6 +8,7 @@ import { DrivePage3 } from "./pages/DrivePage3";
 import { DrivePage4 } from "./pages/DrivePage4";
 import { DrivePage5 } from "./pages/DrivePage5";
 import { DrivePage6 } from "./pages/DrivePage6";
+import { ChatPage } from "./pages/ChatPage";
 
 type SidebarItem = {
   label: string;
@@ -23,6 +24,7 @@ const sidebarItems: SidebarItem[] = [
   { label: "My Drive v4", path: "/drive-4", Icon: Folder },
   { label: "My Drive v5", path: "/drive-5", Icon: Folder },
   { label: "My Drive v6", path: "/drive-6", Icon: Folder },
+  { label: "Chat", path: "/chat", Icon: MessageCircle },
   { label: "Search", path: "/search", Icon: SearchIcon },
   { label: "Upload", path: "/upload", Icon: Upload },
   { label: "Shared", path: "/shared", Icon: Share2 },
@@ -164,6 +166,7 @@ export function App() {
           <Route path="/drive-4" element={<DrivePage4 />} />
           <Route path="/drive-5" element={<DrivePage5 />} />
           <Route path="/drive-6" element={<DrivePage6 />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/search" element={<SearchView />} />
           <Route path="/upload" element={<UploadView />} />
           <Route path="/shared" element={<SharedView />} />
