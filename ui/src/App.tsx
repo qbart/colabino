@@ -4,7 +4,7 @@ import { HashRouter, NavLink, Navigate, Outlet, Route, Routes, useLocation } fro
 import logo from "./logo.png";
 import { DrivePage } from "./pages/DrivePage";
 import { DrivePage2 } from "./pages/DrivePage2";
-import { DrivePage6 } from "./pages/DrivePage6";
+import { DataPage } from "./pages/DataPage";
 import { ChatPage } from "./pages/ChatPage";
 
 type SidebarItem = {
@@ -15,7 +15,7 @@ type SidebarItem = {
 };
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Main Drive", path: "/drive-6", Icon: Folder },
+  { label: "Data", path: "/data", Icon: Folder },
   { label: "Chat", path: "/chat", Icon: MessageCircle },
   { label: "Apps", path: "/apps", Icon: Grid2x2, spacerBefore: true },
   { label: "My Drive", path: "/drive", Icon: Folder },
@@ -155,11 +155,11 @@ export function App() {
     <HashRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route index element={<Navigate to="/drive-6" replace />} />
+          <Route index element={<Navigate to="/data" replace />} />
           <Route path="/apps" element={<AppsView />} />
           <Route path="/drive" element={<DrivePage />} />
           <Route path="/drive-2" element={<DrivePage2 />} />
-          <Route path="/drive-6" element={<DrivePage6 />} />
+          <Route path="/data" element={<DataPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/search" element={<SearchView />} />
           <Route path="/upload" element={<UploadView />} />

@@ -131,7 +131,7 @@ function durationToSeconds(raw?: string) {
   return 3;
 }
 
-export function DrivePage6() {
+export function DataPage() {
   const [view, setView] = useState<"simple" | "signals">("simple");
   const [playingItem, setPlayingItem] = useState<string | null>(null);
   const [playProgress, setPlayProgress] = useState(0);
