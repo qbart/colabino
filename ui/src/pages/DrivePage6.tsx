@@ -11,8 +11,9 @@ import {
   Image as ImageIcon,
   Orbit,
   Play,
+  Square,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../logo.png";
 
 type ItemKind = "folder" | "project" | "image" | "audio" | "3d" | "document" | "sheet" | "proposal" | "board";
@@ -96,8 +97,49 @@ function leadingVisual(item: DriveItem) {
   return kindIcon(item.kind);
 }
 
+function durationToSeconds(raw?: string) {
+  if (!raw) return 3;
+  if (raw.endsWith("s")) return Number.parseFloat(raw.replace("s", "")) || 3;
+  if (raw.endsWith("m")) {
+    const value = raw.replace("m", "");
+    if (value.includes(":")) {
+      const [mins, secs] = value.split(":");
+      const minsNum = Number.parseInt(mins ?? "0", 10);
+      const secsNum = Number.parseInt(secs ?? "0", 10);
+      return minsNum * 60 + secsNum;
+    }
+    return (Number.parseFloat(value) || 1) * 60;
+  }
+  return 3;
+}
+
 export function DrivePage6() {
   const [view, setView] = useState<"simple" | "signals">("simple");
+  const [playingItem, setPlayingItem] = useState<string | null>(null);
+  const [playProgress, setPlayProgress] = useState(0);
+
+  useEffect(() => {
+    if (!playingItem) return;
+    const item = items.find(candidate => candidate.name === playingItem);
+    const totalSeconds = durationToSeconds(item?.duration);
+    const tickMs = 80;
+    const step = 100 / ((totalSeconds * 1000) / tickMs);
+
+    const timer = window.setInterval(() => {
+      setPlayProgress(previous => {
+        const next = previous + step;
+        if (next >= 100) {
+          window.clearInterval(timer);
+          setPlayingItem(null);
+          return 0;
+        }
+        return next;
+      });
+    }, tickMs);
+
+    return () => window.clearInterval(timer);
+  }, [playingItem]);
+
   const sortedItems = [...items].sort((a, b) => {
     if (a.kind === "folder" && b.kind !== "folder") return -1;
     if (a.kind !== "folder" && b.kind === "folder") return 1;
@@ -138,7 +180,7 @@ export function DrivePage6() {
           {sortedItems.map(item => (
             <article
               key={item.name}
-              className="flex min-h-14 items-center justify-between gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-left hover:bg-black/[0.02]"
+              className="relative flex min-h-14 items-center justify-between gap-2 overflow-hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-left hover:bg-black/[0.02]"
             >
               <div className="flex min-w-0 items-center gap-2">
                 {leadingVisual(item)}
@@ -150,11 +192,29 @@ export function DrivePage6() {
               {item.kind === "audio" ? (
                 <button
                   type="button"
-                  aria-label={`Play ${item.name}`}
+                  aria-label={playingItem === item.name ? `Stop ${item.name}` : `Play ${item.name}`}
                   className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-black/15 text-black/70 hover:bg-black/[0.03]"
+                  onClick={() => {
+                    if (playingItem === item.name) {
+                      setPlayingItem(null);
+                      setPlayProgress(0);
+                      return;
+                    }
+                    setPlayProgress(0);
+                    setPlayingItem(item.name);
+                  }}
                 >
-                  <Play className="h-3 w-3" aria-hidden="true" />
+                  {playingItem === item.name ? (
+                    <Square className="h-3 w-3" aria-hidden="true" />
+                  ) : (
+                    <Play className="h-3 w-3" aria-hidden="true" />
+                  )}
                 </button>
+              ) : null}
+              {item.kind === "audio" && playingItem === item.name ? (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-black/10">
+                  <div className="h-full bg-black/60 transition-[width] duration-75" style={{ width: `${playProgress}%` }} />
+                </div>
               ) : null}
             </article>
           ))}
