@@ -2,14 +2,14 @@ import {
   Activity,
   AudioLines,
   Cylinder,
-  CheckCircle2,
-  FolderKanban,
-  FileSpreadsheet,
   FileText,
+  FilePenLine,
   Folder,
   Grid3X3,
   Image as ImageIcon,
-  Orbit,
+  StickyNote,
+  SquareKanban,
+  Table2,
   Play,
   Square,
 } from "lucide-react";
@@ -28,11 +28,13 @@ type DriveItem = {
   duration?: string;
   modelType?: "GLTF" | "USDZ" | "OBJ";
   tris?: string;
+  projectMilestone?: string;
+  openTasks?: number;
 };
 
 const items = [
   { name: "Product Docs", kind: "folder", fileCount: 24 },
-  { name: "Q2 Product Launch", kind: "project" },
+  { name: "Q2 Product Launch", kind: "project", projectMilestone: "Sprint 14", openTasks: 8 },
   { name: "Design Assets", kind: "folder", fileCount: 57 },
   { name: "Homepage Hero Render", kind: "image", previewSrc: logo, imageType: "PNG", resolution: "600x200" },
   { name: "Product Team Photo", kind: "image", imageType: "JPG", resolution: "3024x2016" },
@@ -66,6 +68,9 @@ function secondaryLabel(item: DriveItem) {
   if (item.kind === "folder") {
     return `${item.fileCount ?? 0} files`;
   }
+  if (item.kind === "project") {
+    return `${item.projectMilestone ?? "Sprint"}, ${item.openTasks ?? 0} open tasks`;
+  }
   if (item.kind === "image") {
     return `${item.imageType ?? "PNG"}, ${item.resolution ?? "600x200"}`;
   }
@@ -80,13 +85,13 @@ function secondaryLabel(item: DriveItem) {
 
 function kindIcon(kind: ItemKind) {
   if (kind === "folder") return <Folder className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
-  if (kind === "project") return <FolderKanban className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
+  if (kind === "project") return <SquareKanban className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
   if (kind === "image") return <ImageIcon className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
   if (kind === "audio") return <AudioLines className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
   if (kind === "3d") return <Cylinder className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
-  if (kind === "sheet") return <FileSpreadsheet className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
-  if (kind === "proposal") return <CheckCircle2 className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
-  if (kind === "board") return <Orbit className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
+  if (kind === "sheet") return <Table2 className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
+  if (kind === "proposal") return <FilePenLine className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
+  if (kind === "board") return <StickyNote className="h-5 w-5 shrink-0 rotate-180 text-black/70" aria-hidden="true" />;
   return <FileText className="h-5 w-5 shrink-0 text-black/70" aria-hidden="true" />;
 }
 
